@@ -35,6 +35,7 @@
 #include "guiengine/modaldialog.hpp"
 #include "guiengine/screen_keyboard.hpp"
 #include "input/input_manager.hpp"
+#include "karts/kart.hpp"
 #include "modes/world.hpp"
 #include "modes/profile_world.hpp"
 #include "network/network_config.hpp"
@@ -54,6 +55,9 @@
 #include "states_screens/online/server_selection.hpp"
 #include "states_screens/main_menu_screen.hpp"
 #include "states_screens/state_manager.hpp"
+#include "tracks/check_manager.hpp"
+#include "tracks/track.hpp"
+#include "tracks/track_object_manager.hpp"
 #include "utils/profiler.hpp"
 #include "utils/string_utils.hpp"
 #include "utils/time.hpp"
@@ -63,6 +67,8 @@
 #include <thread>
 
 #include <IrrlichtDevice.h>
+
+#include <cmath>
 
 #ifndef WIN32
 #include <unistd.h>
@@ -458,13 +464,22 @@ void MainLoop::run()
         PROFILER_PUSH_CPU_MARKER("Main loop", 0xFF, 0x00, 0xF7);
         TimePoint frame_start = std::chrono::steady_clock::now();
         ReplayControl* rc = ReplayControl::get();
-        double elapsed_time = getLimitedDt();
 
-        if (!RaceManager::get()->isWatchingReplay())
-            left_over_time += elapsed_time;
-        else if (rc->isPlaying())
-            left_over_time += elapsed_time*rc->getRate();
-        // In the paused watched replay case, there is nothing to do
+        if (RaceManager::get()->isWatchingReplay() &&
+            rc->isControlEnabled())
+        {
+            // Stops time using the World
+            if (!rc->isPlaying()) 
+                left_over_time += getLimitedDt() * 0;
+            else
+            {
+                if (!rc->isRewinding())
+                    left_over_time += getLimitedDt() * rc->getRate();
+                else
+                    left_over_time -= getLimitedDt() * rc->getRate();
+            }
+        }
+        else left_over_time += getLimitedDt();
 
         int num_steps   = stk_config->time2Ticks(left_over_time);
         float dt = stk_config->ticks2Time(1);
@@ -569,8 +584,9 @@ void MainLoop::run()
 
         if (!m_abort)
         {
-            float frame_duration = num_steps * dt;
-            float real_duration = (float)elapsed_time;
+            // We take the absolute value of num_steps to avoid a frozen screen
+            // during a rewind
+            float frame_duration = std::abs(num_steps) * dt;
             if (!GUIEngine::isNoGraphics())
             {
                 PROFILER_PUSH_CPU_MARKER("Update race", 0, 255, 255);
@@ -580,12 +596,12 @@ void MainLoop::run()
 
                 // Render the previous frame, and also handle all user input.
                 PROFILER_PUSH_CPU_MARKER("IrrDriver update", 0x00, 0x00, 0x7F);
-                irr_driver->update(real_duration);
+                irr_driver->update(frame_duration);
                 PROFILER_POP_CPU_MARKER();
 
                 PROFILER_PUSH_CPU_MARKER("Input/GUI", 0x7F, 0x00, 0x00);
-                input_manager->update(real_duration);
-                GUIEngine::update(real_duration);
+                input_manager->update(frame_duration);
+                GUIEngine::update(frame_duration);
                 PROFILER_POP_CPU_MARKER();
                 if (!m_download_assets)
                 {
@@ -598,7 +614,7 @@ void MainLoop::run()
             if (!m_download_assets)
             {
                 PROFILER_PUSH_CPU_MARKER("Database polling update", 0x00, 0x7F, 0x7F);
-                Online::RequestManager::get()->update(real_duration);
+                Online::RequestManager::get()->update(frame_duration);
                 PROFILER_POP_CPU_MARKER();
             }
 
@@ -632,6 +648,10 @@ void MainLoop::run()
             bool fast_forward = NetworkConfig::get()->isNetworking() &&
                 NetworkConfig::get()->isClient() &&
                 num_steps > stk_config->time2Ticks(1.0f);
+
+            if (num_steps < 0)
+                updateRace(num_steps, false);
+
             for (int i = 0; i < num_steps; i++)
             {
                 if (World::getWorld() && history->replayHistory())

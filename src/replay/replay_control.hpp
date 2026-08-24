@@ -27,8 +27,14 @@
 class ReplayControl
 {
 private:
+    /** True if replay control is enabled. */
+    bool   m_control_enabled;
+
     /** True if replay playback is playing, false if paused. */
     bool   m_is_playing;
+
+    /** True if the direction of time is backwards */
+    bool   m_is_rewinding;
 
     /** The rate of playback as a multiplier. */
     double m_rate;
@@ -41,20 +47,28 @@ private:
 public:
     ReplayControl()
     {
+        m_control_enabled =  false;
         m_is_playing      =  false;
+        m_is_rewinding    =  false;
         m_rate            =  1.0;
         m_duration        = -1.0;
     }
     // ------------------------------------------------------------------------
     void    reset();
     // ------------------------------------------------------------------------
+    bool    isControlEnabled() const { return m_control_enabled; }
+    // ------------------------------------------------------------------------
     bool    isPlaying()        const { return m_is_playing; }
+    // ------------------------------------------------------------------------
+    bool    isRewinding()      const { return m_is_rewinding; }
     // ------------------------------------------------------------------------
     double  getRate()          const { return m_rate; }
     // ------------------------------------------------------------------------
     double  getDuration()      const { return m_duration; }
     // ------------------------------------------------------------------------
     void    setPlaying(bool playing)                { m_is_playing = playing; }
+    // ------------------------------------------------------------------------
+    void    setRewinding(bool rewinding)        { m_is_rewinding = rewinding; }
     // ------------------------------------------------------------------------
     void    setDuration(double duration)             { m_duration = duration; }
     // ------------------------------------------------------------------------
