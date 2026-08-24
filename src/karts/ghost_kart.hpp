@@ -104,6 +104,9 @@ public:
       * Returns -1.0f if none */
     virtual float getTimeForDistance(float distance) OVERRIDE;
 
+    // ------------------------------------------------------------------------
+    /** Returns the distance at the current index */
+    virtual float getCurrentDistance() const OVERRIDE;
     // ----------------------------------------------------------------------------
     /** Returns the smallest time at which the kart had the required number of eggs
       * Returns -1.0f if none */

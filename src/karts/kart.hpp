@@ -826,6 +826,9 @@ public:
       * Returns -1.0f if none */
     virtual float getTimeForDistance(float distance) { return -1.0f; }
     // ------------------------------------------------------------------------
+    /** Returns the distance at the current index */
+    virtual float getCurrentDistance() const { return -1.0f; }
+    // ------------------------------------------------------------------------
     /** Returns true if this kart has no wheels. */
     bool isWheeless() const;
     // ------------------------------------------------------------------------

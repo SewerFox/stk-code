@@ -1189,6 +1189,28 @@ void World::update(int ticks)
     assert(m_magic_number == 0xB01D6543);
 #endif
 
+    // Rewind the world.
+    // The check for a negative tick count is a sufficient condition as the only way
+    // to produce a negative tick count is via ReplayControl's rewind. If in future
+    // a system is added that also produces a negative tick count, a guard would have
+    // to be implemented here.
+    if (ticks < 0)
+    {
+        int target = getTicksSinceStart() + ticks;
+        if (target < 0)
+        {
+            target = 0;
+            ReplayControl::get()->setRewinding(false);
+        }
+        setTicksForRewind(target);
+        Track::getCurrentTrack()->getCheckManager()->resetAfterRewind();
+        Track::getCurrentTrack()->getTrackObjectManager()->resetAfterRewind();
+        for (unsigned int i = 0; i < getNumKarts(); i++)
+        {
+            getKart(i)->update(0);
+        }
+        return;
+    }
     PROFILER_PUSH_CPU_MARKER("World::update()", 0x00, 0x7F, 0x00);
 
 #if MEASURE_FPS

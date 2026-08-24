@@ -373,6 +373,16 @@ float GhostKart::getGhostFinishTime()
 }  // getGhostFinishTime
 
 // ----------------------------------------------------------------------------
+/** Returns the distance at the current index */
+float GhostKart::getCurrentDistance() const
+{
+    unsigned int current_index =
+        dynamic_cast<const GhostController*>(getController())
+        ->getCurrentReplayIndex();
+
+    return m_all_replay_events[current_index].m_distance;
+}
+// ----------------------------------------------------------------------------
 /** Returns the time at which the kart was at a given distance.
   * Returns -1.0f if none */
 float GhostKart::getTimeForDistance(float distance)

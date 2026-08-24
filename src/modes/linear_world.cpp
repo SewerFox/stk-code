@@ -173,6 +173,32 @@ void LinearWorld::reset(bool restart)
  */
 void LinearWorld::update(int ticks)
 {
+    // The lap counter breaks in all sorts of ways when ticks can be negative
+    // (i.e. during a rewind), this fixes that.
+    if (ticks < 0)
+    {
+        float track_length = Track::getCurrentTrack()->getTrackLength();
+        WorldWithRank::update(ticks);
+        for (unsigned int i = 0; i < getNumKarts(); i++)
+        {
+            if (getKart(i)->isGhostKart())
+            {
+                int laps = getKart(i)->getCurrentDistance() / track_length;
+
+                m_kart_info[i].m_finished_laps = laps;
+
+                if (laps == 0)
+                    m_kart_info[i].m_lap_start_ticks = 0;
+
+                else
+                    m_kart_info[i].m_lap_start_ticks =
+                        stk_config->time2Ticks(getKart(i)->getTimeForDistance(laps*track_length));
+            }
+        }
+        updateTrackSectors();
+        return;
+    }
+
     auto sl = LobbyProtocol::get<ServerLobby>();
     if (sl && getPhase() == RACE_PHASE)
     {
