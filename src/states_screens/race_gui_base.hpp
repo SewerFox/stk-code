@@ -39,6 +39,7 @@ class Kart;
 class Camera;
 class Material;
 class Referee;
+class RaceGUIReplay;
 class RaceGUIMultitouch;
 
 /**
@@ -209,6 +210,8 @@ protected:
     video::ITexture* m_lap_flag;
     
     RaceGUIMultitouch* m_multitouch_gui;
+
+    RaceGUIReplay* m_replay_gui;
 
     //void createMarkerTexture();
     void createRegularPolygon(unsigned int n, float radius,

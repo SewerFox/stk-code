@@ -46,6 +46,7 @@
 #include "modes/world.hpp"
 #include "network/protocols/client_lobby.hpp"
 #include "network/network_config.hpp"
+#include "states_screens/race_gui_replay.hpp"
 #include "states_screens/race_gui_multitouch.hpp"
 #include "tracks/track.hpp"
 #include "utils/constants.hpp"

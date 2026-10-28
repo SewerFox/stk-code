@@ -60,6 +60,7 @@ using namespace irr;
 #include "network/protocols/client_lobby.hpp"
 #include "race/race_manager.hpp"
 #include "replay/replay_control.hpp"
+#include "states_screens/race_gui_replay.hpp"
 #include "states_screens/race_gui_multitouch.hpp"
 #include "tracks/track.hpp"
 #include "tracks/track_object_manager.hpp"
@@ -147,6 +148,7 @@ void RaceGUI::initSize()
 RaceGUI::~RaceGUI()
 {
     delete m_multitouch_gui;
+    delete m_replay_gui;
 }   // ~Racegui
 
 
@@ -322,7 +324,11 @@ void RaceGUI::renderGlobal(float dt)
     //drawGlobalTimer checks if it should display in the current phase/mode
     FontDrawer::startBatching();
     drawGlobalTimer();
-    drawReplayMenu();
+
+    if (RaceManager::get()->isWatchingReplay())
+    {
+        m_replay_gui = new RaceGUIReplay();
+    }
 
     if (!m_is_tutorial)
     {
@@ -564,75 +570,6 @@ void RaceGUI::drawLiveDifference()
                true /* ignore RTL */);
     font->setBlackBorder(false);
 }   // drawLiveDifference
-
-//-----------------------------------------------------------------------------
-/** Draws one of the replay control menu's lines.
- */
-void RaceGUI::drawReplayMenuLine(const core::stringw& text, int y, int x, bool hcenter)
-{
-    core::rect<s32> pos(x,
-                        y,
-                        irr_driver->getActualScreenSize().Width,
-                        y + irr_driver->getActualScreenSize().Height*3/100);
-
-    gui::ScalableFont* font = GUIEngine::getFont();
-    font->draw(text.c_str(), pos, video::SColor(255, 255, 255, 255),
-               hcenter, false, NULL, true);
-}   // drawReplayMenuLine
-
-//-----------------------------------------------------------------------------
-/** Gets a key bound to a certain action
- */
-static core::stringw getKeyBinding(PlayerAction action)
-{
-    InputDevice* device = input_manager->getDeviceManager()->getLatestUsedDevice();
-    if (device != NULL)
-    {
-        DeviceConfig* config = device->getConfiguration();
-        return config->getBindingAsString(action);
-    }
-    else { return ""; }
-}   // getKeyBinding
-
-//-----------------------------------------------------------------------------
-/** Draws the replay control menu.
- */
-void RaceGUI::drawReplayMenu()
-{
-    if (!RaceManager::get()->isWatchingReplay()) { return; }
-
-    ReplayControl* rc = ReplayControl::get();
-    int height = irr_driver->getActualScreenSize().Height;
-    int width = irr_driver->getActualScreenSize().Width;
-    int y = height*20/100;
-    int x = width*77/100;
-
-    gui::ScalableFont* font = GUIEngine::getFont();
-    font->setScale(1.0f);
-    font->setBlackBorder(true);
-
-    drawReplayMenuLine(_("--Replay Controls--"), y, x, true);
-
-    y = height*24/100;
-
-    drawReplayMenuLine(_("[%s] to pause", getKeyBinding(PA_FIRE)), y, x,
-                                false);
-    y = height*32/100;
-
-    drawReplayMenuLine(_("[%s/%s] to change rate", getKeyBinding(PA_BRAKE),
-                                getKeyBinding(PA_ACCEL)), y, x, false);
-    y = height*36/100;
-
-    drawReplayMenuLine(_("Rate is currently x%s",
-                                StringUtils::toWString(rc->getRate())), y, x, false);
-    y = height*44/100;
-
-    drawReplayMenuLine(_("Time: %s / %s",
-                                core::stringw (StringUtils::timeToString(World::getWorld()->getTime()).c_str()),
-                                core::stringw (StringUtils::timeToString(rc->getDuration()).c_str())),
-                                y, x, false);
-    font->setBlackBorder(false);
-}   // drawReplayMenu
 
 //-----------------------------------------------------------------------------
 /** Draws the mini map and the position of all karts on it.
