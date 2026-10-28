@@ -23,7 +23,7 @@ ReplayControl *ReplayControl::m_replay_control = NULL;
 
 void ReplayControl::reset()
 {
-    m_control_enabled = true;
+    m_control_enabled =  true;
     m_is_playing      =  true;
     m_is_rewinding    =  false;
     m_rate            =  1.0;

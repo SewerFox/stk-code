@@ -26,34 +26,16 @@ using namespace irr;
 
 #include "config/user_config.hpp"
 #include "font/font_drawer.hpp"
-#include "graphics/camera/camera.hpp"
-#include "graphics/central_settings.hpp"
-#include "graphics/2dutils.hpp"
-#ifndef SERVER_ONLY
-#include "graphics/glwrap.hpp"
-#endif
 #include "graphics/irr_driver.hpp"
 #include "graphics/material.hpp"
 #include "guiengine/engine.hpp"
-#include "guiengine/modaldialog.hpp"
 #include "guiengine/scalable_font.hpp"
 #include "input/device_manager.hpp"
 #include "input/input_device.hpp"
 #include "input/input_manager.hpp"
 #include "io/file_manager.hpp"
-#include "items/powerup_manager.hpp"
-#include "items/projectile_manager.hpp"
-#include "karts/kart.hpp"
-#include "karts/controller/controller.hpp"
-#include "karts/kart_properties.hpp"
-#include "karts/kart_properties_manager.hpp"
-#include "modes/linear_world.hpp"
 #include "modes/world.hpp"
-#include "modes/soccer_world.hpp"
-#include "network/protocols/client_lobby.hpp"
 #include "replay/replay_control.hpp"
-#include "states_screens/race_gui_multitouch.hpp"
-#include "utils/constants.hpp"
 #include "utils/string_utils.hpp"
 #include "utils/translation.hpp"
 
@@ -73,15 +55,6 @@ RaceGUIReplay::RaceGUIReplay()
         m_enabled = false;
 
     initSize();
-    bool multitouch_enabled = (UserConfigParams::m_multitouch_active == 1 &&
-                               irr_driver->getDevice()->supportsTouchDevice()) ||
-                               UserConfigParams::m_multitouch_active > 1;
-    
-    if (multitouch_enabled && UserConfigParams::m_multitouch_draw_gui &&
-        RaceManager::get()->getNumLocalPlayers() == 1)
-    {
-        m_multitouch_gui = new RaceGUIMultitouch(this);
-    }
 
     drawReplayGUI();
     // m_speed_meter_icon = irr_driver->getTexture(FileManager::GUI_ICON, "speedback.png");
@@ -98,13 +71,6 @@ void RaceGUIReplay::initSize()
     core::dimension2du area = font->getDimension(L"99:99.999");
     m_font_height = area.Height;
 }   // initSize
-
-//-----------------------------------------------------------------------------
-RaceGUIReplay::~RaceGUIReplay()
-{
-    delete m_multitouch_gui;
-}   // ~RaceGUIReplay
-
 
 //-----------------------------------------------------------------------------
 void RaceGUIReplay::init()

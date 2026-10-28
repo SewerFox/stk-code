@@ -55,7 +55,6 @@ private:
 
 public:
     RaceGUIReplay();
-    ~RaceGUIReplay();
     virtual void init();
     virtual void reset();
     virtual void initSize();

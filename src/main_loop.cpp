@@ -468,27 +468,19 @@ void MainLoop::run()
         if (RaceManager::get()->isWatchingReplay() &&
             rc->isControlEnabled())
         {
-            // Stops time using The World
-            if (!rc->isPlaying())
-            {
-                left_over_time += getLimitedDt()*0;
-            }
+            // Stops time using the World
+            if (!rc->isPlaying()) 
+                left_over_time += getLimitedDt() * 0;
             else
             {
                 if (!rc->isRewinding())
-                {
-                    left_over_time += getLimitedDt()*rc->getRate();
-                }
+                    left_over_time += getLimitedDt() * rc->getRate();
                 else
-                {
-                    left_over_time -= getLimitedDt()*rc->getRate();
-                }
+                    left_over_time -= getLimitedDt() * rc->getRate();
             }
         }
-        else
-        {
-            left_over_time += getLimitedDt();
-        }
+        else left_over_time += getLimitedDt();
+
         int num_steps   = stk_config->time2Ticks(left_over_time);
         float dt = stk_config->ticks2Time(1);
         left_over_time -= num_steps * dt;
