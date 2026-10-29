@@ -83,6 +83,8 @@ RaceGUIBase::RaceGUIBase()
     // I18N: Shown waiting for the server in network if live join or spectate
     m_string_waiting_for_the_server = _("Waiting for the server");
 
+    m_paused_icon = irr_driver->getTexture(FileManager::GUI_ICON, "android/pause.png");
+
     m_music_icon = irr_driver->getTexture("notes.png");
     if (!m_music_icon)
     {
@@ -470,6 +472,25 @@ void RaceGUIBase::drawPowerupIcons(const Kart* kart,
     }
 #endif
 }   // drawPowerupIcons
+
+// ----------------------------------------------------------------------------
+/** Draw a big pause icon when called.
+ */
+
+void RaceGUIBase::drawPauseIndicator() 
+{
+    int icon_width = irr_driver->getActualScreenSize().Height / 6;
+
+    core::rect<s32> icon_pos((irr_driver->getActualScreenSize().Width - icon_width) / 2,
+                             (irr_driver->getActualScreenSize().Height - icon_width) / 2,
+                             (irr_driver->getActualScreenSize().Width - icon_width) / 2 + icon_width,
+                             (irr_driver->getActualScreenSize().Height - icon_width) / 2 + icon_width);
+    
+    core::rect<s32> source_rect(core::position2d<s32>(0, 0),
+                                m_paused_icon->getSize());
+    draw2DImage(m_paused_icon, icon_pos, source_rect,
+                NULL, NULL, true);
+}   // drawPauseIndicator
 
 // ----------------------------------------------------------------------------
 /** Updates lightning related information.

@@ -207,6 +207,9 @@ protected:
 
     /** Texture for the lap icon*/
     video::ITexture* m_lap_flag;
+
+    /** Texture for the paused icon*/
+    video::ITexture* m_paused_icon;
     
     RaceGUIMultitouch* m_multitouch_gui;
 
@@ -221,6 +224,7 @@ protected:
     void drawPowerupIcons      (const Kart* kart,
                                 const core::recti &viewport,
                                 const core::vector2df &scaling);
+    void drawPauseIndicator();
     void drawGlobalMusicDescription();
     void drawGlobalReadySetGo();
     void drawGlobalGoal();

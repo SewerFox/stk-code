@@ -286,6 +286,7 @@ void RaceGUI::renderGlobal(float dt)
     RaceGUIBase::renderGlobal(dt);
     cleanupMessages(dt);
 
+
     // Special case : when 3 players play, use 4th window to display such
     // stuff (but we must clear it)
     if (RaceManager::get()->getIfEmptyScreenSpaceExists() &&
@@ -298,7 +299,13 @@ void RaceGUI::renderGlobal(float dt)
     }
 
     World *world = World::getWorld();
+    ReplayControl *rc = ReplayControl::get();
+
     assert(world != NULL);
+
+    if (!rc->isPlaying()) 
+        RaceGUIBase::drawPauseIndicator();
+
     if (world->getPhase() >= WorldStatus::WAIT_FOR_SERVER_PHASE &&
         world->getPhase() <= WorldStatus::GO_PHASE)
     {
