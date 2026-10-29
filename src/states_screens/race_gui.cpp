@@ -619,6 +619,21 @@ void RaceGUI::drawSpeedIndicator()
                true /* ignore RTL */);
     font->setBlackBorder(false);
 
+    // Draw rewind/forward icon in the left side of the speed indicator
+    irr::video::ITexture *m_replay_icon;
+    m_replay_icon = (rc->isRewinding()) ? m_fast_rewind : m_fast_forward;
+
+    int icon_width = irr_driver->getActualScreenSize().Height / 19;
+
+    core::rect<s32> icon_pos(irr_driver->getActualScreenSize().Width - (icon_width + dist_from_right + 10),
+                             irr_driver->getActualScreenSize().Height * 7 / 100,
+                             irr_driver->getActualScreenSize().Width - (dist_from_right + 10),
+                             irr_driver->getActualScreenSize().Height * 11 / 100);
+    
+    core::rect<s32> source_rect(core::position2d<s32>(0, 0),
+                                m_replay_icon->getSize());
+    draw2DImage(m_replay_icon, icon_pos, source_rect,
+                NULL, NULL, true);
 } // drawSpeedIndicator
 
 //-----------------------------------------------------------------------------

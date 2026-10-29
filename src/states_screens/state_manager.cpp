@@ -199,7 +199,7 @@ void StateManager::onGameStateChange(GameState new_state)
 
     if (new_state == GAME)
     {
-        if (RaceManager::get()->getMinorMode() != RaceManager::MINOR_MODE_OVERWORLD)
+        if (RaceManager::get()->getMinorMode() != RaceManager::MINOR_MODE_OVERWORLD && !RaceManager::get()->isWatchingReplay())
             irr_driver->hidePointer();
         input_manager->setMode(InputManager::INGAME);
     }
