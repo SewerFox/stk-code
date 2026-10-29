@@ -88,6 +88,10 @@ public:
                                     ) = 0;
 
     // ------------------------------------------------------------------------
+    /** Returns a key bound to a certain action */
+    static core::stringw getKeyBinding(PlayerAction action);
+
+    // ------------------------------------------------------------------------
     /** Sets which players uses this device; or pass NULL to say no player
      *  uses it. */
     void setPlayer(StateManager::ActivePlayer* owner) { m_player = owner; }
@@ -107,9 +111,11 @@ public:
     // ------------------------------------------------------------------------
     /** Returns the player using this device. */
     StateManager::ActivePlayer *getPlayer() { return m_player; }
+
     // ------------------------------------------------------------------------
     /** Returns the name of this device. */
-    const std::string& getName() const { return m_name; }
+    const std::string& getName() const { return m_name; }   
+
     // ------------------------------------------------------------------------
     void setConnected(bool val) { m_connected = val; }
     // ------------------------------------------------------------------------

@@ -19,6 +19,7 @@
 #include "input/device_config.hpp"
 
 #include "guiengine/abstract_state_manager.hpp"
+#include "input/device_manager.hpp"
 #include "input/input.hpp"
 #include "input/input_device.hpp"
 #include "karts/kart.hpp"
@@ -26,21 +27,31 @@
 #include "race/race_manager.hpp"
 #include "states_screens/state_manager.hpp"
 
-
 InputDevice::InputDevice()
 {
-    m_connected     = true;
-    m_player        = NULL;
+    m_connected = true;
+    m_player = NULL;
     m_configuration = NULL;
-}   // InputDevice
+} // InputDevice
 
 // ----------------------------------------------------------------------------
 InputDevice::~InputDevice()
 {
-}   // ~InputDevice
+} // ~InputDevice
 
 // ------------------------------------------------------------------------
 bool InputDevice::lookbackToFireback() const
 {
     return !m_configuration->hasDedicatedFireback();
-}   // lookbackToFireBack
+} // lookbackToFireBack
+
+// ------------------------------------------------------------------------
+/** Returns a key bound to a certain action */
+core::stringw InputDevice::getKeyBinding(PlayerAction action)
+{
+    InputDevice *device = input_manager->getDeviceManager()->getLatestUsedDevice();
+    if (device != NULL)
+        return device->getConfiguration()->getBindingAsString(action);
+    else
+        return "";
+} // getKeyBinding

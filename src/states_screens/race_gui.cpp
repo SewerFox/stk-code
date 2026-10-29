@@ -594,8 +594,6 @@ void RaceGUI::drawSpeedIndicator()
     int dist_from_right = 18 + m_timer_width;
     bool use_digit_font = true;
 
-    std::ostringstream oss;
-
     if (speed == L"0.1")
         speedText = "Speed x0.1";
     else if (speed == L"0.25")
@@ -639,23 +637,6 @@ void RaceGUI::drawReplayMenuLine(const core::stringw &text, int y, int x, bool h
 } // drawReplayMenuLine
 
 //-----------------------------------------------------------------------------
-/** Gets a key bound to a certain action
- */
-static core::stringw getKeyBinding(PlayerAction action)
-{
-    InputDevice *device = input_manager->getDeviceManager()->getLatestUsedDevice();
-    if (device != NULL)
-    {
-        DeviceConfig *config = device->getConfiguration();
-        return config->getBindingAsString(action);
-    }
-    else
-    {
-        return "";
-    }
-} // getKeyBinding
-
-//-----------------------------------------------------------------------------
 /** Draws the replay control menu.
  */
 void RaceGUI::drawReplayMenu()
@@ -674,20 +655,20 @@ void RaceGUI::drawReplayMenu()
 
     y = height * 24 / 100;
 
-    drawReplayMenuLine(_("[%s] to pause", getKeyBinding(PA_FIRE)), y, x,
+    drawReplayMenuLine(_("[%s] to pause", InputDevice::getKeyBinding(PA_FIRE)), y, x,
                        false);
     y = height * 32 / 100;
 
-    // drawReplayMenuLine(_("[%s/%s] to change rate", getKeyBinding(PA_BRAKE),
-    //                      getKeyBinding(PA_ACCEL)),
+    // drawReplayMenuLine(_("[%s/%s] to change rate", InputDevice::getKeyBinding(PA_BRAKE),
+    //                      InputDevice::getKeyBinding(PA_ACCEL)),
     //                    y, x, false);
     // y = height * 36 / 100;
 
-    drawReplayMenuLine(_("[%s] to rewind", getKeyBinding(PA_STEER_LEFT)), y, x, false);
+    drawReplayMenuLine(_("[%s] to rewind", InputDevice::getKeyBinding(PA_STEER_LEFT)), y, x, false);
 
     y = height * 36 / 100;
 
-    drawReplayMenuLine(_("[%s] to forward", getKeyBinding(PA_STEER_RIGHT)), y, x, false);
+    drawReplayMenuLine(_("[%s] to forward", InputDevice::getKeyBinding(PA_STEER_RIGHT)), y, x, false);
 
     y = height * 40 / 100;
     font->setBlackBorder(false);
