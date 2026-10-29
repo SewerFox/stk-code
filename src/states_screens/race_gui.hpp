@@ -99,8 +99,11 @@ private:
     irr::video::ITexture *m_egg;
     irr::video::ITexture *m_heart_icon;
     irr::video::ITexture *m_basket_ball_icon;
-    /** Texture for the hit limit icon*/
+    /** Texture for the hit limit icon */
     irr::video::ITexture* m_champion;
+    /** Texture for the forward/rewind indicator (for replay watching)*/
+    irr::video::ITexture *m_fast_rewind;
+    irr::video::ITexture *m_fast_forward;
 
     /** Texture for speedometer. */
     irr::video::ITexture *m_speed_meter_icon;
@@ -146,6 +149,7 @@ private:
     void drawGlobalMiniMap     ();
     void drawGlobalTimer       ();
     void drawLiveDifference    ();
+    void drawSpeedIndicator    ();
     void drawReplayMenu        ();
 
     /** Helper function for drawing the replay control menu */
