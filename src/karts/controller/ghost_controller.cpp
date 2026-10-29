@@ -138,8 +138,10 @@ bool GhostController::action(PlayerAction action, int value, bool dry_run)
             }
             rc->setRate(RATE_VALUES[rate_index]);
         }
-        else if (action == PA_NITRO)
-            rc->setRewinding(!rc->isRewinding());
+        else if (action == PA_STEER_LEFT)
+            rc->setRewinding(true);
+        else if (action == PA_STEER_RIGHT)
+            rc->setRewinding(false);
     }
     return true;
 }   // action
