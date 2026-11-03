@@ -103,6 +103,7 @@ RaceGUI::RaceGUI()
 
     m_fast_rewind = irr_driver->getTexture(FileManager::GUI_ICON, "fast-rewind.png");
     m_fast_forward = irr_driver->getTexture(FileManager::GUI_ICON, "fast-forward.png");
+    m_replay_controller = irr_driver->getTexture(FileManager::GUI_ICON, "android/steering_wheel.png");
 
     // Load icon textures for later reuse
     m_red_team = irr_driver->getTexture(FileManager::GUI_ICON, "soccer_ball_red.png");
@@ -286,7 +287,6 @@ void RaceGUI::renderGlobal(float dt)
     RaceGUIBase::renderGlobal(dt);
     cleanupMessages(dt);
 
-
     // Special case : when 3 players play, use 4th window to display such
     // stuff (but we must clear it)
     if (RaceManager::get()->getIfEmptyScreenSpaceExists() &&
@@ -303,7 +303,7 @@ void RaceGUI::renderGlobal(float dt)
 
     assert(world != NULL);
 
-    if (!rc->isPlaying()) 
+    if (!rc->isPlaying())
         RaceGUIBase::drawPauseIndicator();
 
     if (world->getPhase() >= WorldStatus::WAIT_FOR_SERVER_PHASE &&
@@ -636,7 +636,7 @@ void RaceGUI::drawSpeedIndicator()
                              irr_driver->getActualScreenSize().Height * 7 / 100,
                              irr_driver->getActualScreenSize().Width - (dist_from_right + 10),
                              irr_driver->getActualScreenSize().Height * 7 / 100 + icon_width);
-    
+
     core::rect<s32> source_rect(core::position2d<s32>(0, 0),
                                 m_replay_icon->getSize());
     draw2DImage(m_replay_icon, icon_pos, source_rect,
@@ -646,55 +646,12 @@ void RaceGUI::drawSpeedIndicator()
 //-----------------------------------------------------------------------------
 /** Draws one of the replay control menu's lines.
  */
-void RaceGUI::drawReplayMenuLine(const core::stringw &text, int y, int x, bool hcenter)
+
+void RaceGUI::drawReplayController(const Kart *kart, const core::recti &viewport,
+                                   const core::vector2df &scaling)
 {
-    core::rect<s32> pos(x,
-                        y,
-                        irr_driver->getActualScreenSize().Width,
-                        y + irr_driver->getActualScreenSize().Height * 3 / 100);
-
-    gui::ScalableFont *font = GUIEngine::getFont();
-    font->draw(text.c_str(), pos, video::SColor(255, 255, 255, 255),
-               hcenter, false, NULL, true);
-} // drawReplayMenuLine
-
-//-----------------------------------------------------------------------------
-/** Draws the replay control menu.
- */
-void RaceGUI::drawReplayMenu()
-{
-    ReplayControl *rc = ReplayControl::get();
-    int height = irr_driver->getActualScreenSize().Height;
-    int width = irr_driver->getActualScreenSize().Width;
-    int y = height * 20 / 100;
-    int x = width * 77 / 100;
-
-    gui::ScalableFont *font = GUIEngine::getFont();
-    font->setScale(1.0f);
-    font->setBlackBorder(true);
-
-    drawReplayMenuLine(_("--Replay Controls--"), y, x, true);
-
-    y = height * 24 / 100;
-
-    drawReplayMenuLine(_("[%s] to pause", InputDevice::getKeyBinding(PA_FIRE)), y, x,
-                       false);
-    y = height * 32 / 100;
-
-    // drawReplayMenuLine(_("[%s/%s] to change rate", InputDevice::getKeyBinding(PA_BRAKE),
-    //                      InputDevice::getKeyBinding(PA_ACCEL)),
-    //                    y, x, false);
-    // y = height * 36 / 100;
-
-    drawReplayMenuLine(_("[%s] to rewind", InputDevice::getKeyBinding(PA_STEER_LEFT)), y, x, false);
-
-    y = height * 36 / 100;
-
-    drawReplayMenuLine(_("[%s] to forward", InputDevice::getKeyBinding(PA_STEER_RIGHT)), y, x, false);
-
-    y = height * 40 / 100;
-    font->setBlackBorder(false);
-} // drawReplayMenu
+    // To be filled later
+}
 
 //-----------------------------------------------------------------------------
 /** Draws the mini map and the position of all karts on it.

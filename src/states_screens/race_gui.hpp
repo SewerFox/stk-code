@@ -101,9 +101,10 @@ private:
     irr::video::ITexture *m_basket_ball_icon;
     /** Texture for the hit limit icon */
     irr::video::ITexture* m_champion;
-    /** Texture for the forward/rewind indicator (for replay watching)*/
+    /** Texture for the forward/rewind indicator and replay controller (for replay watching)*/
     irr::video::ITexture *m_fast_rewind;
     irr::video::ITexture *m_fast_forward;
+    irr::video::ITexture *m_replay_controller;
 
     /** Texture for speedometer. */
     irr::video::ITexture *m_speed_meter_icon;
@@ -136,6 +137,9 @@ private:
                                 const core::vector2df &offset,
                                 float min_ratio, int meter_width,
                                 int meter_height, float dt);
+    void drawReplayController   (const Kart* kart,
+                                const core::recti &viewport,
+                                const core::vector2df &scaling);
 
     /* Helper functions for drawing meters */
 
@@ -150,10 +154,6 @@ private:
     void drawGlobalTimer       ();
     void drawLiveDifference    ();
     void drawSpeedIndicator    ();
-    void drawReplayMenu        ();
-
-    /** Helper function for drawing the replay control menu */
-    void drawReplayMenuLine    (const core::stringw& text, int y, int x, bool hcenter);
 
 public:
 
